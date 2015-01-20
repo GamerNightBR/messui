@@ -79,6 +79,7 @@
 #include "softwarelist.h"
 #include "messui.h"
 #include "winui.h"
+#include "drivenum.h"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -906,8 +907,8 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 
 	// run the emulation
 	//mame_opts.set_value(OPTION_SYSTEMNAME, driver_list::driver(nGameIndex).name, OPTION_PRIORITY_CMDLINE,error_string);
-	windows_osd_interface osd;
-	osd.register_options(mame_opts);
+	windows_osd_interface osd(mame_opts);
+	osd.register_options();
 	machine_manager *manager = machine_manager::instance(mame_opts, osd);
 	manager->execute();
 	global_free(manager);

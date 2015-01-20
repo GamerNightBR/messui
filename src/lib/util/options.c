@@ -508,7 +508,7 @@ const char *core_options::output_ini(astring &buffer, const core_options *diff)
 			if ( !curentry->is_internal() )
 			{
 				// look up counterpart in diff, if diff is specified
-				if (diff == NULL || strcmp(value, diff->value(name)) != 0)
+				//if (diff == NULL || strcmp(value, diff->value(name)) != 0) MESSUI need entire file
 				{
 					// output header, if we have one
 					if (last_header != NULL)

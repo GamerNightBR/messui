@@ -251,8 +251,8 @@ astring &image_mandatory_scan(running_machine &machine, astring &mandatory)
 	image_interface_iterator iter(machine.root_device());
 	for (device_image_interface *image = iter.first(); image != NULL; image = iter.next())
 	{
-		if (image->filename() == NULL && image->must_be_loaded())
-			mandatory.cat("\"").cat(image->instance_name()).cat("\", ");
+//		if (image->filename() == NULL && image->must_be_loaded()) // MESSUI
+//			mandatory.cat("\"").cat(image->instance_name()).cat("\", ");
 	}
 	return mandatory;
 }

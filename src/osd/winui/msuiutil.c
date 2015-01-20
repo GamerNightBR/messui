@@ -6,6 +6,7 @@
 #include "image.h"
 #include "msuiutil.h"
 #include "mui_opts.h"
+#include "drivenum.h"
 
 BOOL DriverIsComputer(int driver_index)
 {

@@ -30,6 +30,7 @@
 #include "mui_util.h"
 #include "hash.h"
 #include "softwarepicker.h"
+#include "drivenum.h"
 
 
 

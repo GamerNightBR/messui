@@ -14,6 +14,7 @@
 #include "optionsms.h"
 #include "emuopts.h"
 #include "winui.h"
+#include "drivenum.h"
 
 #define WINGUIOPTION_SOFTWARE_COLUMN_SHOWN		"mess_column_shown"
 #define WINGUIOPTION_SOFTWARE_COLUMN_WIDTHS		"mess_column_widths"

@@ -35,14 +35,11 @@
 UNICODE = 1
 
 # set this to the minimum Direct3D version to support (8 or 9)
-ifndef DIRECT3D
-DIRECT3D = 9
-endif
 
 # set this to the minimum DirectInput version to support (7 or 8)
-ifndef DIRECTINPUT
-DIRECTINPUT = 8
-endif
+# ifndef DIRECTINPUT
+# DIRECTINPUT = 8
+# endif
 
 
 
@@ -67,10 +64,14 @@ EMULATOR = $(PREFIX)$(NAME)ui$(SUFFIX)$(SUFFIX64)$(SUFFIXDEBUG)$(EXE)
 WINSRC = $(SRC)/osd/windows
 WINOBJ = $(OBJ)/osd/windows
 
+OSDSRC = $(SRC)/osd
+OSDOBJ = $(OBJ)/osd
+
 OBJDIRS += $(WINOBJ) \
 	$(OSDOBJ)/modules/sync \
 	$(OSDOBJ)/modules/lib \
 	$(OSDOBJ)/modules/midi \
+	$(OSDOBJ)/modules/font \
 
 # add ui specific src/objs
 UISRC = $(SRC)/osd/$(OSD)
@@ -90,7 +91,7 @@ RC = @windres --use-temp-file
 
 RCDEFS = -DNDEBUG -D_WIN32_IE=0x0501
 
-# include UISRC direcotry
+# include UISRC directory
 RCFLAGS = -O coff -I $(UISRC) -I $(UIOBJ)
 
 
@@ -196,7 +197,6 @@ endif
 
 # ensure we statically link the gcc runtime lib
 LDFLAGS += -static-libgcc
-
 TEST_GCC = $(shell gcc --version)
 ifeq ($(findstring 4.4,$(TEST_GCC)),)
 	#if we use new tools
@@ -225,25 +225,15 @@ endif
 
 # add the windows libaries, 3 additional libs at the end for UI
 BASELIBS += -luser32 -lgdi32 -ldsound -ldxguid -lwinmm -ladvapi32 -lcomctl32 -lshlwapi -lwsock32
-LIBS += \
-	-luser32 \
-	-lgdi32 \
-	-lddraw \
-	-ldsound \
-	-ldxguid \
-	-lwinmm \
-	-ladvapi32 \
-	-lcomctl32 \
-	-lshlwapi \
-	-lcomdlg32 \
-	-lwsock32 \
+LIBS += -luser32 -lgdi32 -ldsound -ldxguid -lwinmm -ladvapi32 -lcomctl32 -lshlwapi -lwsock32 \
+	-lddraw -lcomdlg32
 
-ifeq ($(DIRECTINPUT),7)
-LIBS += -ldinput
-CFLAGS += -DDIRECTINPUT_VERSION=0x0700
-else
+ifeq ($(DIRECTINPUT),8)
 LIBS += -ldinput8
 CFLAGS += -DDIRECTINPUT_VERSION=0x0800
+else
+LIBS += -ldinput
+CFLAGS += -DDIRECTINPUT_VERSION=0x0700
 endif
 
 # add -mwindows for UI
@@ -269,10 +259,10 @@ OSDCOREOBJS = \
 	$(WINOBJ)/winutil.o \
 	$(WINOBJ)/winptty.o \
 	$(WINOBJ)/winsocket.o \
-	$(WINOBJ)/../modules/sync/sync_windows.o \
-	$(WINOBJ)/../modules/sync/work_osd.o \
-	$(WINOBJ)/../modules/lib/osdlib_win32.o \
-
+	$(OSDOBJ)/modules/font/font_windows.o \
+	$(OSDOBJ)/modules/lib/osdlib_win32.o \
+	$(OSDOBJ)/modules/sync/sync_windows.o \
+	$(OSDOBJ)/modules/sync/work_osd.o \
 
 # if malloc debugging is enabled, include the necessary code
 ifneq ($(findstring MALLOC_DEBUG,$(DEFS)),)
@@ -297,10 +287,12 @@ OSDOBJS = \
 	$(WINOBJ)/drawnone.o \
 	$(WINOBJ)/input.o \
 	$(WINOBJ)/output.o \
+	$(OSDOBJ)/modules/sound/direct_sound.o \
+	$(OSDOBJ)/modules/debugger/debugwin.o \
 	$(WINOBJ)/video.o \
 	$(WINOBJ)/window.o \
-	$(WINOBJ)/../modules/sound/direct_sound.o \
-	$(WINOBJ)/../modules/midi/portmidi.o \
+	$(OSDOBJ)/modules/midi/portmidi.o \
+	$(OSDOBJ)/modules/lib/osdobj_common.o \
 	$(UIOBJ)/menu.o	\
 
 ifndef DONT_USE_NETWORK
@@ -351,12 +343,6 @@ OSDOBJS += \
 # extra dependencies
 $(WINOBJ)/drawdd.o :	$(SRC)/emu/rendersw.inc
 $(WINOBJ)/drawgdi.o :	$(SRC)/emu/rendersw.inc
-
-
-# add debug-specific files
-
-OSDOBJS += \
-	$(WINOBJ)/../modules/debugger/debugwin.o
 
 $(WINOBJ)/winmainui.o : $(WINSRC)/winmain.c
 	@echo Compiling $<...

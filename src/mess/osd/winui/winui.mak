@@ -16,6 +16,7 @@ MESS_WINUISRC = $(SRC)/mess/osd/winui
 MESS_WINUIOBJ = $(OBJ)/mess/osd/winui
 WINUISRC = $(SRC)/osd/winui
 WINUIOBJ = $(OBJ)/osd/winui
+OSDOBJ = $(OBJ)/osd
 
 RESFILE = $(MESS_WINUIOBJ)/messui.res
 
@@ -54,12 +55,16 @@ WINOSDOBJS = \
 	$(WINOBJ)/drawnone.o \
 	$(WINOBJ)/input.o \
 	$(WINOBJ)/output.o \
-	$(WINOBJ)/../modules/sound/direct_sound.o \
+	$(OSDOBJ)/modules/sound/direct_sound.o \
+	$(OSDOBJ)/modules/lib/osdlib_win32.o \
 	$(WINOBJ)/video.o \
 	$(WINOBJ)/window.o \
-	$(WINOBJ)/../modules/debugger/debugwin.o \
+	$(OSDOBJ)/modules/debugger/debugwin.o \
+	$(OSDOBJ)/modules/font/font_windows.o \
+	$(OSDOBJ)/modules/lib/osdobj_common.o \
+	$(OSDOBJ)/modules/midi/portmidi.o \
 	$(WINOBJ)/winmain.o \
-	$(UIOBJ)/menu.o	\
+	$(UIOBJ)/menu.o \
 
 ifndef DONT_USE_NETWORK
 WINOSDOBJS += \

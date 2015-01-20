@@ -20,6 +20,7 @@
 #include "strconv.h"
 #include "winutf8.h"
 #include "mui_util.h"
+#include "drivenum.h"
 
 #define DEVVIEW_PADDING	10
 

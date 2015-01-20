@@ -31,6 +31,7 @@
 #include "osdcomm.h"
 #include "datafile.h"
 #include "mui_opts.h" // For MameUIGlobal()
+#include "drivenum.h"
 
 /****************************************************************************
  *      token parsing constants

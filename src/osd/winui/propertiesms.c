@@ -31,6 +31,7 @@
 #include "strconv.h"
 #include "winutf8.h"
 #include "machine/ram.h"
+#include "drivenum.h"
 
 static BOOL SoftwareDirectories_OnInsertBrowse(HWND hDlg, BOOL bBrowse, LPCTSTR lpItem);
 static BOOL SoftwareDirectories_OnDelete(HWND hDlg);

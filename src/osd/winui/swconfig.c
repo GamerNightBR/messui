@@ -15,6 +15,8 @@
 #include "emu.h"
 #include "swconfig.h"
 #include "mui_opts.h"
+#include "drivenum.h"
+
 //============================================================
 //  IMPLEMENTATION
 //============================================================

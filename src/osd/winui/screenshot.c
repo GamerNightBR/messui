@@ -41,7 +41,7 @@
 #include "mui_opts.h"
 #include "mui_util.h"
 #include "winui.h"
-
+#include "drivenum.h"
 
 /***************************************************************************
     Static global variables

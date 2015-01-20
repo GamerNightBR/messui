@@ -37,6 +37,7 @@
 #include "swconfig.h"
 #include "zippath.h"
 #include "emuopts.h"
+#include "drivenum.h"
 
 
 //============================================================
