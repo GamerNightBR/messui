@@ -1,39 +1,24 @@
-What is MAME?
-=============
+What is MESSUI?
+===============
 
-MAME stands for Multiple Arcade Machine Emulator.
+MESS (Multi Emulator Super System) is the sister project of MAME. MESS documents the hardware for a wide variety of (mostly vintage) computers, video game consoles, and calculators, as MAME does for arcade games. (see https://github.com/mamedev/mame)
 
-MAME's purpose is to preserve decades of video-game history. As gaming technology continues to rush forward, MAME prevents these important "vintage" games from being lost and forgotten. This is achieved by documenting the hardware and how it functions. The source code to MAME serves as this documentation. The fact that the games are playable serves primarily to validate the accuracy of the documentation (how else can you prove that you have recreated the hardware faithfully?).
+MESSUI has an inbuilt front-end allowing you to choose a system from a list. MESSUI comes with NEWUI, which is a drop-down menu system, similar to what you get with any Windows program.
 
-What is MESS?
-=============
-
-MESS (Multi Emulator Super System) is the sister project of MAME. MESS documents the hardware for a wide variety of (mostly vintage) computers, video game consoles, and calculators, as MAME does for arcade games.
-
-The MESS and MAME projects live in the same source repository and share much of the same code, but are different build targets.
 
 How to compile?
-=============
+===============
 
-If you're on a *nix system, it could be as easy as typing
+You can only build MESSUI on a Windows computer. It won't compile on Unix.
 
-```
-make
-```
+make TARGET=mess OSD=winui
 
-for a MAME build, or
-
-```
-make TARGET=mess
-```
-
-for a MESS build (provided you have all the [prerequisites](http://forums.bannister.org/ubbthreads.php?ubb=showflat&Number=35138)).
-
-For Windows users, we provide a ready-made [build environment](http://mamedev.org/tools/) based on MinGW-w64. [Visual Studio builds](http://wiki.mamedev.org/index.php?title=Building_MAME_using_Microsoft_Visual_Studio_compilers) are also possible.
 
 Where can I find out more?
 =============
 
 * [Official MAME Development Team Site](http://mamedev.org/) (includes binary downloads for MAME and MESS, wiki, forums, and more)
 * [Official MESS Wiki](http://www.mess.org/)
-* [MAME Testers](http://mametesters.org/) (official bug tracker for MAME and MESS)
+* [MAME Testers](http://mametesters.org/) (official bug tracker for MAME and MESS). If you find a bug in MESSUI, you need to confirm it on an official MESS build from mamedev.org before you can log a bug.
+* [MESSUI site] http://messui.1emulation.com
+* [MESSUI forum] http://www.1emulation.com/forums/forum/125-messui/  (this is for bugs with the MESSUI front-end, or NEWUI. Not for things that are also in an official MESS build.)
