@@ -11,7 +11,9 @@ How to compile?
 
 You can only build MESSUI on a Windows computer. It won't compile on Unix.
 
+```
 make TARGET=mess OSD=winui
+```
 
 
 Where can I find out more?
