@@ -4,6 +4,8 @@
 #ifndef __SEGA315_5881_CRYPT__
 #define __SEGA315_5881_CRYPT__
 
+#include "315-5881_helper.h"
+
 typedef device_delegate<UINT16 (UINT32)> sega_m2_read_delegate;
 
 extern const device_type SEGA315_5881_CRYPT;
@@ -40,8 +42,9 @@ protected:
 private:
 
 	enum {
-		BUFFER_SIZE = 32768, LINE_SIZE = 512,
-		FLAG_COMPRESSED = 0x10000, FLAG_LINE_SIZE_512 = 0x20000
+//        BUFFER_SIZE = 32768, LINE_SIZE = 512,
+		BUFFER_SIZE = 2, LINE_SIZE = 512,  // this should be a stream, without any 'BUFFER_SIZE' ? I guess the SH4 DMA implementation isn't on a timer tho?
+		FLAG_COMPRESSED = 0x20000
 	};
 
 	UINT32 key;
@@ -53,9 +56,14 @@ private:
 
 	bool enc_ready;
 
-	int buffer_pos, line_buffer_pos, line_buffer_size, buffer_bit;
+	int buffer_pos, line_buffer_pos, line_buffer_size, buffer_bit, buffer_bit2;
+	UINT8 buffer2[2];
+	UINT16 buffer2a;
+
 	int block_size;
 	int block_pos;
+	int block_numlines;
+	int done_compression;
 
 	struct sbox {
 		UINT8 table[64];

@@ -70,8 +70,15 @@ UINT16 sega_315_5881_crypt_device::do_decrypt(UINT8 *&base)
 	if(!enc_ready)
 		enc_start();
 	if(dec_header & FLAG_COMPRESSED) {
-		if(line_buffer_pos == line_buffer_size)
+		if (line_buffer_pos == line_buffer_size) // if there's no data left to read..
+		{
+			if (done_compression == 1)
+				enc_start();
+				
+
+
 			line_fill();
+		}
 		base = line_buffer + line_buffer_pos;
 		line_buffer_pos += 2;
 	} else {
@@ -94,6 +101,9 @@ void sega_315_5881_crypt_device::set_addr_high(UINT16 data)
 {
 	prot_cur_address = (prot_cur_address & 0x0000ffff) | (data << 16);
 	enc_ready = false;
+
+	buffer_bit = 7;
+	buffer_bit2 = 15;
 }
 
 void sega_315_5881_crypt_device::set_subkey(UINT16 data)
@@ -645,33 +655,50 @@ UINT16 sega_315_5881_crypt_device::get_decrypted_16()
 
 	prot_cur_address ++;
 
+//	printf("get_decrypted_16 %04x\n", res);
+
 	return res;
 }
 
 
 void sega_315_5881_crypt_device::enc_start()
 {
-	dec_hist = 0; // seems to be needed by astrass at least otherwise any call after the first one will be influenced by the one before it.
 	block_pos = 0;
+	done_compression = 0;
 	buffer_pos = BUFFER_SIZE;
-	dec_header = get_decrypted_16() << 16;
+	
+	if (buffer_bit2 != 15) // if we have remaining bits in the decompression buffer we shouldn't read the next word yet but should instead use the bits we have?? (twcup98) (might just be because we should be pulling bytes not words?)
+	{
+//		printf("buffer_bit2 is %d\n", buffer_bit2);
+		dec_header = (buffer2a & 0x0003) << 16;
+	}
+	else
+	{
+		dec_hist = 0; // seems to be needed by astrass at least otherwise any call after the first one will be influenced by the one before it.
+		dec_header = get_decrypted_16() << 16;
+	}
+
 	dec_header |= get_decrypted_16();
 
 	// the lower header bits are 2 values that multiply together to get the current stream length
 	// in astrass the first block is 0xffff (for a 0x10000 block) followed by 0x3f3f (for a 0x1000 block)
 	// etc. after each block a new header must be read, it looks like compressed and uncompressed blocks
 	// can be mixed like this, I don't know if the length is src length of decompressed length.
-	int blockx = ((dec_header & 0x00ff) >> 0) + 1;
-	int blocky = ((dec_header & 0xff00) >> 8) + 1;
-	block_size = blockx * blocky;
+	// deathcox and others confirm format as 0x20000 bit as compressed bit, 0x1ff00 bits as block size 1, 0x000ff bits as block size 2
+	// for compressed streams the 'line size' is block size 1.  
+
+	block_numlines = ((dec_header & 0x000000ff) >> 0) + 1;
+	int blocky = ((dec_header & 0x0001ff00) >> 8) + 1;
+	block_size = block_numlines * blocky;
 
 	if(dec_header & FLAG_COMPRESSED) {
-		line_buffer_size = dec_header & FLAG_LINE_SIZE_512 ? 512 : 256;
+		line_buffer_size = blocky;
 		line_buffer_pos = line_buffer_size;
 		buffer_bit = 7;
+		buffer_bit2 = 15;
 	}
 
-//	printf("header %08x\n", dec_header);
+	printf("header %08x\n", dec_header);
 	enc_ready = true;
 }
 
@@ -683,12 +710,16 @@ void sega_315_5881_crypt_device::enc_fill()
 		buffer[i] = val;
 		buffer[i+1] = val >> 8;
 		block_pos+=2;
-		if (block_pos == block_size)
-		{
-			// if we reach the size specified we need to read a new header
-			// todo: how should this work with compressed blocks??
 
-			enc_start();
+		if (!(dec_header & FLAG_COMPRESSED))
+		{
+			if (block_pos == block_size)
+			{
+				// if we reach the size specified we need to read a new header
+				// todo: for compressed blocks this depends on OUTPUT size, not input size, so things get messy
+
+				enc_start();
+			}
 		}
 	}
 	buffer_pos = 0;
@@ -768,9 +799,27 @@ const UINT8 sega_315_5881_crypt_device::trees[9][2][32] = {
 
 int sega_315_5881_crypt_device::get_compressed_bit()
 {
-	if(buffer_pos == BUFFER_SIZE)
-		enc_fill();
-	int res = (buffer[buffer_pos^1] >> buffer_bit) & 1;
+//	if(buffer_pos == BUFFER_SIZE)
+//		enc_fill();
+
+	if (buffer_bit2 == 15)
+	{
+		buffer_bit2 = 0;
+		buffer2a = get_decrypted_16();
+		buffer2[0] = buffer2a;
+		buffer2[1] = buffer2a >> 8;
+	//	block_pos+=2;
+		buffer_pos = 0;
+
+	}
+	else
+	{
+		buffer_bit2++;
+	}
+
+//	if (buffer_bit ==7) printf("using byte %02x\n", buffer2[(buffer_pos&1) ^ 1]);
+
+	int res = (buffer2[(buffer_pos&1)^1] >> buffer_bit) & 1;
 	buffer_bit--;
 	if(buffer_bit == -1) {
 		buffer_bit = 7;
@@ -778,7 +827,6 @@ int sega_315_5881_crypt_device::get_compressed_bit()
 	}
 	return res;
 }
-
 void sega_315_5881_crypt_device::line_fill()
 {
 	assert(line_buffer_pos == line_buffer_size);
@@ -787,8 +835,6 @@ void sega_315_5881_crypt_device::line_fill()
 	line_buffer = lc;
 	line_buffer_prev = lp;
 	line_buffer_pos = 0;
-
-	UINT32 line_buffer_mask = line_buffer_size-1;
 
 	for(int i=0; i != line_buffer_size;) {
 		// vlc 0: start of line
@@ -812,7 +858,7 @@ void sega_315_5881_crypt_device::line_fill()
 				static int offsets[4] = {0, 1, 0, -1};
 				int offset = offsets[(tmp & 0x18) >> 3];
 				for(int j=0; j != count; j++) {
-					lc[i^1] = lp[((i+offset) & line_buffer_mask)^1];
+					lc[i^1] = lp[((i+offset) % line_buffer_size)^1];
 					i++;
 				}
 
@@ -832,5 +878,14 @@ void sega_315_5881_crypt_device::line_fill()
 
 			}
 		}
+	}
+
+	block_pos++;
+	if (block_numlines == block_pos)
+	{
+		done_compression = 1;
+	}
+	else
+	{
 	}
 }
