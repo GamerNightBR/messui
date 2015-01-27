@@ -304,7 +304,7 @@ OSDOBJS = \
 	$(OSDOBJ)/modules/debugger/debugint.o \
 	$(OSDOBJ)/modules/debugger/debugqt.o \
 	$(OSDOBJ)/modules/debugger/none.o \
-	$(UIOBJ)/menu.o \
+	$(UIOBJ)/newui.o \
 
 ifndef DONT_USE_NETWORK
 OSDOBJS += \

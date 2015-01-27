@@ -76,7 +76,7 @@ WINOSDOBJS = \
 	$(OSDOBJ)/modules/debugger/debugqt.o \
 	$(OSDOBJ)/modules/debugger/none.o \
 	$(WINOBJ)/winmain.o \
-	$(UIOBJ)/menu.o \
+	$(UIOBJ)/newui.o \
 
 ifndef DONT_USE_NETWORK
 WINOSDOBJS += \
