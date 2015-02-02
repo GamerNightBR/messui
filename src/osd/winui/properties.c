@@ -242,6 +242,7 @@ static struct ComboBoxVideo
 	{ TEXT("GDI"),                  "gdi"     },
 	{ TEXT("DirectDraw"),           "ddraw"   },
 	{ TEXT("Direct3D"),             "d3d"     },
+	{ TEXT("BGFX"),                 "bgfx"    },
 };
 #define NUMVIDEO (sizeof(g_ComboBoxVideo) / sizeof(g_ComboBoxVideo[0]))
 
