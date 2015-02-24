@@ -3976,7 +3976,7 @@ LRESULT CALLBACK winwindow_video_window_proc_ui(HWND wnd, UINT message, WPARAM w
 			/* fall through */
 
 		default:
-			return winwindow_video_window_proc(wnd, message, wparam, lparam);
+			return win_window_info::video_window_proc(wnd, message, wparam, lparam);
 	}
 	return 0;
 }
