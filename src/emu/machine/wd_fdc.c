@@ -2594,7 +2594,7 @@ wd2791_t::wd2791_t(const machine_config &mconfig, const char *tag, device_t *own
 wd2793_t::wd2793_t(const machine_config &mconfig, const char *tag, device_t *owner, UINT32 clock) : wd_fdc_analog_t(mconfig, WD2793x, "WD2793", tag, owner, clock, "wd2793", __FILE__)
 {
 	step_times = fd179x_step_times;
-	delay_register_commit = 16;
+	delay_register_commit = 1;//6;
 	delay_command_commit = 12;
 	disable_mfm = false;
 	inverted_bus = false;
