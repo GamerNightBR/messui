@@ -243,6 +243,9 @@ static struct ComboBoxVideo
 	{ TEXT("DirectDraw"),           "ddraw"   },
 	{ TEXT("Direct3D"),             "d3d"     },
 	{ TEXT("BGFX"),                 "bgfx"    },
+#if (USE_OPENGL)
+	{ TEXT("OpenGL"),               "opengl"  },
+#endif
 };
 #define NUMVIDEO (sizeof(g_ComboBoxVideo) / sizeof(g_ComboBoxVideo[0]))
 
