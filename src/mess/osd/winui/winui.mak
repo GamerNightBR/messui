@@ -34,7 +34,7 @@ $(MESS_WINUIOBJ)/messui.res:	$(WINUISRC)/mameui.rc $(MESS_WINUISRC)/messui.rc $(
 
 $(WINUIOBJ)/mamevers.rc: $(SRC)/build/verinfo.py $(SRC)/version.c
 	@echo Emitting $@...
-	$(PYTHON) $(SRC)/build/verinfo.py -b mame $(SRC)/version.c > $@
+	$(PYTHON) $(SRC)/build/verinfo.py -b mess $(SRC)/version.c > $@
 
 $(LIBOSD): $(OSDOBJS)
 
