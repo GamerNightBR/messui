@@ -26,6 +26,7 @@
 #include <shellapi.h>
 #include <commctrl.h>
 #include <commdlg.h>
+#include <assert.h>
 
 // MAME/MAMEUI headers
 #include <stdlib.h>

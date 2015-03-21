@@ -27,6 +27,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#include <assert.h>
 
 // MAME/MAMEUI headers
 #include <stdlib.h>
